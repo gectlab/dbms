@@ -1,17 +1,30 @@
+CREATE TABLE Library (
+    BookId INT PRIMARY KEY,
+    BookName VARCHAR(50),
+    AvailableCopies INT
+);
+
+CREATE TABLE BookTransaction (
+    TxnId INT PRIMARY KEY,
+    BookId INT,
+    Operation VARCHAR(20),
+    Quantity INT,
+    FOREIGN KEY (BookId) REFERENCES Library(BookId)
+);
+
 DELIMITER //
 
 CREATE TRIGGER update_book_copies
-AFTER INSERT ON Library
+AFTER INSERT ON BookTransaction
 FOR EACH ROW
 BEGIN
     IF NEW.Operation = 'Borrowal' THEN
         UPDATE Library
-        SET AvailableCopies = AvailableCopies - NEW.Qty
+        SET AvailableCopies = AvailableCopies - NEW.Quantity
         WHERE BookId = NEW.BookId;
-
     ELSEIF NEW.Operation = 'Withdrawal' THEN
         UPDATE Library
-        SET AvailableCopies = AvailableCopies + NEW.Qty
+        SET AvailableCopies = AvailableCopies + NEW.Quantity
         WHERE BookId = NEW.BookId;
     END IF;
 END;
