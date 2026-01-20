@@ -1,0 +1,13 @@
+DELIMITER //
+
+CREATE TRIGGER update_booked_seats
+AFTER INSERT ON Booking
+FOR EACH ROW
+BEGIN
+    UPDATE Bus
+    SET BookedSeats = BookedSeats + NEW.Seats
+    WHERE BusNo = NEW.BusNo;
+END;
+//
+
+DELIMITER ;
