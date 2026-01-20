@@ -1,0 +1,20 @@
+DELIMITER //
+
+CREATE TRIGGER update_book_copies
+AFTER INSERT ON Library
+FOR EACH ROW
+BEGIN
+    IF NEW.Operation = 'Borrowal' THEN
+        UPDATE Library
+        SET AvailableCopies = AvailableCopies - NEW.Qty
+        WHERE BookId = NEW.BookId;
+
+    ELSEIF NEW.Operation = 'Withdrawal' THEN
+        UPDATE Library
+        SET AvailableCopies = AvailableCopies + NEW.Qty
+        WHERE BookId = NEW.BookId;
+    END IF;
+END;
+//
+
+DELIMITER ;
