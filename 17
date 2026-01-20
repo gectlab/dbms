@@ -1,0 +1,20 @@
+CREATE TABLE booking (
+    booking_id INT PRIMARY KEY,
+    seats INT,
+    kms INT,
+    fare_per_km DECIMAL(6,2),
+    total_fare DECIMAL(10,2)
+);
+ 
+DELIMITER $$
+ 
+CREATE PROCEDURE calculate_total_fare(IN b_id INT)
+BEGIN
+    UPDATE booking
+    SET total_fare = seats * kms * fare_per_km
+    WHERE booking_id = b_id;
+END $$
+ 
+DELIMITER ;
+ 
+CALL calculate_total_fare(101);
