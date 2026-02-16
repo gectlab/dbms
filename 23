@@ -1,0 +1,44 @@
+CREATE TABLE Employee (
+    empid   NUMBER PRIMARY KEY,
+    name    VARCHAR2(50),
+    dept    VARCHAR2(50),
+    salary  NUMBER(10,2)
+);
+
+BEGIN
+INSERT INTO Employee VALUES (101, 'Rahul', 'HR', 45000);
+INSERT INTO Employee VALUES (102, 'Anita', 'IT', 60000);
+INSERT INTO Employee VALUES (103, 'Vikram', 'Finance', 55000);
+
+COMMIT;
+END;
+/
+
+CREATE OR REPLACE PACKAGE emp_pkg AS
+    PROCEDURE get_salary(p_empid NUMBER);
+END emp_pkg;
+/
+
+CREATE OR REPLACE PACKAGE BODY emp_pkg AS
+    PROCEDURE get_salary(p_empid NUMBER) IS
+        v_salary Employee.salary%TYPE;
+    BEGIN
+        SELECT salary
+        INTO v_salary
+        FROM Employee
+        WHERE empid = p_empid;
+
+        DBMS_OUTPUT.PUT_LINE('Salary of ' || p_empid || ' is: ' || v_salary);
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            DBMS_OUTPUT.PUT_LINE('EMPLOYEE NOT FOUND');
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('error: ' || SQLERRM);
+    END get_salary;
+END emp_pkg;
+/
+
+BEGIN
+    emp_pkg.get_salary(101);
+END;
+/
